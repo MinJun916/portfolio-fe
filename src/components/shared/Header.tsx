@@ -50,6 +50,8 @@ const Header = () => {
 
   const closeMobileMenu = () => setMobileMenuOpen(false);
 
+  if (pathname === '/admin' || pathname.startsWith('/admin/')) return null;
+
   return (
     <header className="border-border/60 bg-background/80 sticky top-0 z-50 w-full border-b pt-[env(safe-area-inset-top)] backdrop-blur-md">
       <div className="mx-auto flex h-14 min-h-14 w-full max-w-[1200px] min-w-0 items-center justify-between px-4 sm:h-16 sm:px-6">
