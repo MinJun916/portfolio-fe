@@ -8,6 +8,7 @@ import { getToken } from '@/lib/admin-session';
 import { apiError } from '@/lib/api';
 
 import AdminShell from './AdminShell';
+import { AdminSpinner } from './AdminSpinner';
 
 export default function AdminGuard({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -21,6 +22,7 @@ export default function AdminGuard({ children }: { children: React.ReactNode }) 
   if (!session.token || session.isPending) {
     return (
       <div className="admin-status" role="status">
+        <AdminSpinner />
         로그인 상태를 확인하고 있습니다.
       </div>
     );
@@ -38,14 +40,16 @@ export default function AdminGuard({ children }: { children: React.ReactNode }) 
             onClick={() => void session.refetch()}
             disabled={session.isFetching}
           >
-            다시 시도
+            {session.isFetching && <AdminSpinner />}
+            {session.isFetching ? '확인 중…' : '다시 시도'}
           </button>
           <button
             className="admin-button-secondary"
             onClick={() => logout.mutate()}
             disabled={logout.isPending}
           >
-            로그아웃
+            {logout.isPending && <AdminSpinner />}
+            {logout.isPending ? '로그아웃 중…' : '로그아웃'}
           </button>
         </div>
         {logout.isError && (

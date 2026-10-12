@@ -13,6 +13,8 @@ import { useContentDetail, useSaveContent } from '@/hooks/useAdmin';
 import { useUnsavedChanges } from '@/hooks/useUnsavedChanges';
 import { apiError } from '@/lib/api';
 
+import { AdminSpinner } from './AdminSpinner';
+
 import type { ContentMap, InputMap, Resource } from '@/types/admin';
 
 export default function ContentEditor({ resource, id }: { resource: Resource; id: string }) {
@@ -20,7 +22,13 @@ export default function ContentEditor({ resource, id }: { resource: Resource; id
   const [reloadCount, setReloadCount] = useState(0);
   if (id !== 'new' && query.isPending) return <QueryStatus />;
   if (id !== 'new' && query.isError && !query.data)
-    return <QueryStatus error={query.error} retry={() => void query.refetch()} />;
+    return (
+      <QueryStatus
+        error={query.error}
+        retry={() => void query.refetch()}
+        pending={query.isFetching}
+      />
+    );
   return (
     <Editor
       key={`${resource}:${id}:${query.data?.version ?? 'new'}:${reloadCount}`}
@@ -74,6 +82,7 @@ function Editor({
   return (
     <form
       className="space-y-6"
+      aria-busy={save.isPending}
       onSubmit={(event) => {
         event.preventDefault();
         if (save.isPending) return;
@@ -147,6 +156,7 @@ function Editor({
           type="submit"
           disabled={save.isPending || (id !== 'new' && !dirty)}
         >
+          {save.isPending && <AdminSpinner />}
           {save.isPending ? '저장 중…' : id === 'new' ? '콘텐츠 생성' : '변경사항 저장'}
         </button>
       </div>

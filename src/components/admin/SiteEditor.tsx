@@ -9,6 +9,8 @@ import { useSaveSite, useSite } from '@/hooks/useAdmin';
 import { useUnsavedChanges } from '@/hooks/useUnsavedChanges';
 import { apiError } from '@/lib/api';
 
+import { AdminSpinner } from './AdminSpinner';
+
 import type { Site, SiteData } from '@/types/admin';
 
 export default function SiteEditor() {
@@ -16,7 +18,13 @@ export default function SiteEditor() {
   const [reloadCount, setReloadCount] = useState(0);
   if (query.isPending) return <QueryStatus />;
   if (query.isError && !query.data)
-    return <QueryStatus error={query.error} retry={() => void query.refetch()} />;
+    return (
+      <QueryStatus
+        error={query.error}
+        retry={() => void query.refetch()}
+        pending={query.isFetching}
+      />
+    );
   if (!query.data) return null;
   return (
     <Form
@@ -40,6 +48,7 @@ function Form({ site, reload }: { site: Site; reload: () => void }) {
   return (
     <form
       className="space-y-6"
+      aria-busy={save.isPending}
       onSubmit={(event) => {
         event.preventDefault();
         if (!save.isPending)
@@ -78,9 +87,14 @@ function Form({ site, reload }: { site: Site; reload: () => void }) {
       )}
       <div className="admin-savebar flex flex-wrap items-center justify-between gap-3">
         <p className="text-sm text-stone-500" role="status">
-          {dirty ? '저장하지 않은 변경사항이 있습니다.' : `현재 버전 ${site.version}`}
+          {save.isPending
+            ? '사이트 콘텐츠를 저장하고 있습니다…'
+            : dirty
+              ? '저장하지 않은 변경사항이 있습니다.'
+              : `모든 변경사항이 저장되었습니다. · v${site.version}`}
         </p>
         <button className="admin-button" disabled={!dirty || save.isPending}>
+          {save.isPending && <AdminSpinner />}
           {save.isPending ? '저장 중…' : '변경사항 저장'}
         </button>
       </div>

@@ -6,6 +6,8 @@ import { toast } from 'sonner';
 import { useAdminPassword } from '@/hooks/useAdminAuth';
 import { apiError } from '@/lib/api';
 
+import { AdminSpinner } from './AdminSpinner';
+
 import type { FormEvent } from 'react';
 
 export default function PasswordForm() {
@@ -84,6 +86,7 @@ export default function PasswordForm() {
           </p>
         )}
         <button className="admin-button" type="submit" disabled={password.isPending}>
+          {password.isPending && <AdminSpinner />}
           {password.isPending ? '변경 중…' : '비밀번호 변경'}
         </button>
       </form>
