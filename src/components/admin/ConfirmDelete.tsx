@@ -14,14 +14,14 @@ export default function ConfirmDelete({
   return (
     <AlertDialog.Root>
       <AlertDialog.Trigger
-        className="admin-button admin-button-secondary text-red-700"
+        className="admin-button-secondary admin-button-danger"
         disabled={pending}
       >
         삭제
       </AlertDialog.Trigger>
       <AlertDialog.Portal>
-        <AlertDialog.Overlay className="fixed inset-0 z-60 bg-black/30" />
-        <AlertDialog.Content className="admin-card fixed top-1/2 left-1/2 z-60 w-[min(28rem,calc(100%_-_2rem))] -translate-x-1/2 -translate-y-1/2 bg-white p-6 shadow-xl">
+        <AlertDialog.Overlay className="admin-dialog-overlay" />
+        <AlertDialog.Content className="admin-card admin-dialog">
           <AlertDialog.Title className="text-lg font-semibold">
             콘텐츠를 삭제할까요?
           </AlertDialog.Title>
@@ -32,7 +32,10 @@ export default function ConfirmDelete({
             <AlertDialog.Cancel className="admin-button admin-button-secondary">
               취소
             </AlertDialog.Cancel>
-            <AlertDialog.Action className="admin-button bg-red-700" onClick={onConfirm}>
+            <AlertDialog.Action
+              className="admin-button admin-button-destructive"
+              onClick={onConfirm}
+            >
               영구 삭제
             </AlertDialog.Action>
           </div>

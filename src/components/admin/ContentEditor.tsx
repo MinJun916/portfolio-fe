@@ -73,7 +73,7 @@ function Editor({
 
   return (
     <form
-      className="space-y-6"
+      className="admin-editor admin-page"
       onSubmit={(event) => {
         event.preventDefault();
         if (save.isPending) return;
@@ -89,7 +89,7 @@ function Editor({
         );
       }}
     >
-      <header>
+      <header className="admin-page-header">
         <Link className="text-sm text-stone-500 hover:underline" href={`/admin/${resource}`}>
           ← {RESOURCE_LABELS[resource]} 목록
         </Link>
@@ -132,7 +132,7 @@ function Editor({
           )}
         </div>
       )}
-      <div className="admin-savebar flex flex-wrap items-center justify-between gap-3">
+      <div className="admin-savebar">
         <p className="text-sm text-stone-500" role="status">
           {save.isPending
             ? '저장 중…'

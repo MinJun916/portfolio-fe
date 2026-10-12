@@ -28,12 +28,12 @@ export default function ContentList({ resource }: { resource: Resource }) {
   }
 
   return (
-    <div className="space-y-6">
-      <header className="flex flex-wrap items-start justify-between gap-4">
-        <div>
-          <p className="admin-eyebrow">CONTENT</p>
+    <div className="admin-page">
+      <header className="admin-page-heading">
+        <div className="admin-page-header">
+          <p className="admin-eyebrow">콘텐츠 관리</p>
           <h1 className="admin-title">{RESOURCE_LABELS[resource]}</h1>
-          <p className="mt-2 text-sm text-stone-500">공개 상태와 표시 순서를 관리합니다.</p>
+          <p className="admin-muted">공개 상태와 표시 순서를 관리합니다.</p>
         </div>
         <Link className="admin-button" href={`/admin/${resource}/new`}>
           <Plus size={16} aria-hidden />새 콘텐츠
@@ -45,30 +45,37 @@ export default function ContentList({ resource }: { resource: Resource }) {
         <QueryStatus error={query.error} retry={() => void query.refetch()} />
       ) : (
         <>
-          <p className="text-sm text-stone-500">전체 {query.data.length}개</p>
+          <div className="admin-list-summary">
+            <p>
+              전체 <strong>{query.data.length}</strong>개
+            </p>
+            <p className="admin-muted">위에서부터 포트폴리오에 표시됩니다.</p>
+          </div>
           {query.data.length === 0 ? (
-            <div className="admin-card py-12 text-center">
+            <div className="admin-card admin-empty-state">
+              <Plus size={24} aria-hidden="true" />
               <h2 className="font-medium">아직 콘텐츠가 없습니다.</h2>
-              <p className="mt-2 text-sm text-stone-500">첫 콘텐츠를 만들어보세요.</p>
+              <p className="admin-muted">새 콘텐츠 버튼으로 첫 콘텐츠를 만들어보세요.</p>
             </div>
           ) : (
-            <ul className="space-y-3">
+            <ul className="admin-content-list">
               {query.data.map((item, index) => (
-                <li className="admin-card flex flex-wrap items-center gap-4" key={item.id}>
-                  <div className="min-w-0 flex-1 basis-48">
-                    <Link
-                      className="font-semibold break-words hover:underline"
-                      href={`/admin/${resource}/${item.id}`}
-                    >
+                <li className="admin-content-row" key={item.id}>
+                  <span className="admin-content-order" aria-label={`표시 순서 ${index + 1}`}>
+                    {String(index + 1).padStart(2, '0')}
+                  </span>
+                  <div className="admin-content-details">
+                    <Link className="admin-content-title" href={`/admin/${resource}/${item.id}`}>
                       {item.title}
                     </Link>
-                    <p className="mt-1 text-xs text-stone-500">
+                    <p className="admin-content-meta">
                       {new Date(item.updatedAt).toLocaleDateString('ko-KR')} 수정 · v{item.version}
                     </p>
                   </div>
-                  <div className="flex flex-wrap items-center gap-2">
+                  <div className="admin-content-actions">
                     <button
-                      className="admin-button admin-button-secondary"
+                      className="admin-button-secondary admin-publish-button"
+                      data-published={item.isPublished}
                       disabled={busy}
                       aria-label={`${item.title} ${item.isPublished ? '비공개로 변경' : '공개로 변경'}`}
                       onClick={() =>
@@ -78,24 +85,31 @@ export default function ContentList({ resource }: { resource: Resource }) {
                         )
                       }
                     >
-                      {item.isPublished ? '공개' : '비공개'}
+                      <span className="admin-status-dot" aria-hidden="true" />
+                      {item.isPublished ? '공개 중' : '비공개'}
                     </button>
-                    <button
-                      className="admin-button admin-button-secondary"
-                      aria-label={`${item.title} 위로 이동`}
-                      disabled={busy || index === 0}
-                      onClick={() => move(index, -1)}
+                    <div
+                      className="admin-reorder"
+                      role="group"
+                      aria-label={`${item.title} 표시 순서`}
                     >
-                      <ArrowUp size={16} />
-                    </button>
-                    <button
-                      className="admin-button admin-button-secondary"
-                      aria-label={`${item.title} 아래로 이동`}
-                      disabled={busy || index === query.data.length - 1}
-                      onClick={() => move(index, 1)}
-                    >
-                      <ArrowDown size={16} />
-                    </button>
+                      <button
+                        className="admin-button-secondary admin-icon-button"
+                        aria-label={`${item.title} 위로 이동`}
+                        disabled={busy || index === 0}
+                        onClick={() => move(index, -1)}
+                      >
+                        <ArrowUp size={16} aria-hidden="true" />
+                      </button>
+                      <button
+                        className="admin-button-secondary admin-icon-button"
+                        aria-label={`${item.title} 아래로 이동`}
+                        disabled={busy || index === query.data.length - 1}
+                        onClick={() => move(index, 1)}
+                      >
+                        <ArrowDown size={16} aria-hidden="true" />
+                      </button>
+                    </div>
                     <Link
                       className="admin-button admin-button-secondary"
                       href={`/admin/${resource}/${item.id}`}

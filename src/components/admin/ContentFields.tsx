@@ -8,6 +8,7 @@ import {
   PROJECT_CONTENT,
   PROJECT_FIELDS,
 } from '@/constants/admin-fields';
+import { cn } from '@/lib/utils';
 
 import type { Field } from '@/constants/admin-fields';
 import type { InputMap, ProjectInput, ProjectTemplate, SiteData } from '@/types/admin';
@@ -57,8 +58,8 @@ function FieldEditor({ field, value, onChange, disabled }: FieldEditorProps) {
       onChange(next);
     };
     return (
-      <fieldset className="admin-card admin-field" disabled={disabled}>
-        <legend>
+      <fieldset className="admin-card admin-field admin-field-group" disabled={disabled}>
+        <legend className="admin-field-legend">
           {field.label}
           {field.item ? ` (${items.length}/${field.maxItems})` : ''}
         </legend>
@@ -84,7 +85,10 @@ function FieldEditor({ field, value, onChange, disabled }: FieldEditorProps) {
         {field.item && (
           <>
             {items.map((item, index) => (
-              <div key={index} className="admin-card">
+              <div key={index} className="admin-card admin-array-item">
+                <p className="admin-item-label">
+                  {field.label} {index + 1}
+                </p>
                 <FieldEditor
                   field={field.item!}
                   value={item}
@@ -93,7 +97,7 @@ function FieldEditor({ field, value, onChange, disabled }: FieldEditorProps) {
                     onChange(items.map((current, i) => (i === index ? next : current)))
                   }
                 />
-                <div className="admin-actions">
+                <div className="admin-actions admin-item-actions">
                   <button
                     type="button"
                     className="admin-button admin-button-secondary"
@@ -114,7 +118,7 @@ function FieldEditor({ field, value, onChange, disabled }: FieldEditorProps) {
                   </button>
                   <button
                     type="button"
-                    className="admin-button admin-button-secondary"
+                    className="admin-button-secondary admin-button-danger"
                     disabled={disabled}
                     aria-label={`${field.label} ${index + 1}번 삭제`}
                     onClick={() => onChange(items.filter((_, i) => i !== index))}
@@ -141,7 +145,13 @@ function FieldEditor({ field, value, onChange, disabled }: FieldEditorProps) {
   const normalize = (next: string) =>
     next === '' && field.nullable ? null : next === '' && field.optional ? undefined : next;
   return (
-    <div className="admin-field">
+    <div
+      className={cn(
+        'admin-field',
+        field.type === 'textarea' && 'admin-field-wide',
+        field.type === 'checkbox' && 'admin-checkbox-field',
+      )}
+    >
       <label htmlFor={id}>
         {field.label}
         {required && field.type !== 'checkbox' ? ' *' : ''}
