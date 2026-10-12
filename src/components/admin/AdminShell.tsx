@@ -15,6 +15,8 @@ import { usePathname } from 'next/navigation';
 import { useAdminLogout } from '@/hooks/useAdminAuth';
 import { apiError } from '@/lib/api';
 
+import { AdminSpinner } from './AdminSpinner';
+
 import type { Admin } from '@/types/admin';
 
 const navigation = [
@@ -37,6 +39,9 @@ export default function AdminShell({
   const logout = useAdminLogout();
   return (
     <div className="admin-shell">
+      <a className="admin-skip-link" href="#admin-content">
+        본문으로 건너뛰기
+      </a>
       <aside className="admin-sidebar">
         <Link href="/admin" className="admin-brand">
           Portfolio <span>관리자</span>
@@ -65,7 +70,7 @@ export default function AdminShell({
             onClick={() => logout.mutate()}
             disabled={logout.isPending}
           >
-            <LogOut size={16} aria-hidden="true" />
+            {logout.isPending ? <AdminSpinner /> : <LogOut size={16} aria-hidden="true" />}
             {logout.isPending ? '로그아웃 중…' : '로그아웃'}
           </button>
           {logout.isError && (
@@ -78,7 +83,7 @@ export default function AdminShell({
           </Link>
         </div>
       </aside>
-      <main className="admin-main" id="admin-content">
+      <main className="admin-main" id="admin-content" tabIndex={-1}>
         {children}
       </main>
     </div>

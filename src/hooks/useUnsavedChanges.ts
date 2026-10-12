@@ -10,6 +10,7 @@ export function useUnsavedChanges(dirty: boolean) {
     };
     const onClick = (event: MouseEvent) => {
       const link = (event.target as Element).closest?.('a[href], button[data-admin-leave]');
+      if (link?.getAttribute('href')?.startsWith('#')) return;
       if (
         link &&
         link.getAttribute('href') !== window.location.pathname &&

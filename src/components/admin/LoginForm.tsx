@@ -5,6 +5,8 @@ import { useSearchParams } from 'next/navigation';
 import { useAdminLogin } from '@/hooks/useAdminAuth';
 import { apiError } from '@/lib/api';
 
+import { AdminSpinner } from './AdminSpinner';
+
 import type { FormEvent } from 'react';
 
 export default function LoginForm() {
@@ -54,6 +56,7 @@ export default function LoginForm() {
             </p>
           )}
           <button className="admin-button" type="submit" disabled={login.isPending}>
+            {login.isPending && <AdminSpinner />}
             {login.isPending ? '로그인 중…' : '로그인'}
           </button>
         </form>
