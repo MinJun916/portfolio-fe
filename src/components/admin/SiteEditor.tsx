@@ -47,7 +47,7 @@ function Form({ site, reload }: { site: Site; reload: () => void }) {
   useUnsavedChanges(dirty);
   return (
     <form
-      className="space-y-6"
+      className="admin-editor admin-page"
       aria-busy={save.isPending}
       onSubmit={(event) => {
         event.preventDefault();
@@ -58,7 +58,7 @@ function Form({ site, reload }: { site: Site; reload: () => void }) {
           );
       }}
     >
-      <header>
+      <header className="admin-page-header">
         <p className="admin-eyebrow">SITE</p>
         <h1 className="admin-title">사이트 콘텐츠</h1>
         <p className="mt-2 text-sm text-stone-500">
@@ -85,7 +85,7 @@ function Form({ site, reload }: { site: Site; reload: () => void }) {
           </button>
         </div>
       )}
-      <div className="admin-savebar flex flex-wrap items-center justify-between gap-3">
+      <div className="admin-savebar">
         <p className="text-sm text-stone-500" role="status">
           {save.isPending
             ? '사이트 콘텐츠를 저장하고 있습니다…'

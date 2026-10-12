@@ -20,12 +20,23 @@ import { AdminSpinner } from './AdminSpinner';
 import type { Admin } from '@/types/admin';
 
 const navigation = [
-  { href: '/admin', label: '대시보드', icon: LayoutDashboard },
-  { href: '/admin/site', label: '사이트', icon: Globe },
-  { href: '/admin/projects', label: '프로젝트', icon: FolderOpen },
-  { href: '/admin/experiences', label: '경험', icon: BriefcaseBusiness },
-  { href: '/admin/tech-groups', label: '기술 스택', icon: Layers },
-  { href: '/admin/password', label: '비밀번호', icon: KeyRound },
+  {
+    label: '워크스페이스',
+    items: [{ href: '/admin', label: '대시보드', icon: LayoutDashboard }],
+  },
+  {
+    label: '콘텐츠',
+    items: [
+      { href: '/admin/site', label: '사이트', icon: Globe },
+      { href: '/admin/projects', label: '프로젝트', icon: FolderOpen },
+      { href: '/admin/experiences', label: '경험', icon: BriefcaseBusiness },
+      { href: '/admin/tech-groups', label: '기술 스택', icon: Layers },
+    ],
+  },
+  {
+    label: '계정',
+    items: [{ href: '/admin/password', label: '비밀번호', icon: KeyRound }],
+  },
 ];
 
 export default function AdminShell({
@@ -44,26 +55,41 @@ export default function AdminShell({
       </a>
       <aside className="admin-sidebar">
         <Link href="/admin" className="admin-brand">
-          Portfolio <span>관리자</span>
+          <span className="admin-brand-icon">
+            <Layers size={22} aria-hidden="true" />
+          </span>
+          <div>
+            Portfolio <span>관리자 워크스페이스</span>
+          </div>
         </Link>
         <nav aria-label="관리자 메뉴" className="admin-nav">
-          {navigation.map(({ href, label, icon: Icon }) => {
-            const active = href === '/admin' ? pathname === href : pathname.startsWith(href);
-            return (
-              <Link
-                key={href}
-                href={href}
-                aria-current={active ? 'page' : undefined}
-                className="admin-nav-link"
-              >
-                <Icon size={18} aria-hidden="true" />
-                {label}
-              </Link>
-            );
-          })}
+          {navigation.map((group) => (
+            <div className="admin-nav-group" key={group.label}>
+              <p className="admin-nav-label">{group.label}</p>
+              {group.items.map(({ href, label, icon: Icon }) => {
+                const active = href === '/admin' ? pathname === href : pathname.startsWith(href);
+                return (
+                  <Link
+                    key={href}
+                    href={href}
+                    aria-current={active ? 'page' : undefined}
+                    className="admin-nav-link"
+                  >
+                    <Icon size={18} aria-hidden="true" />
+                    {label}
+                  </Link>
+                );
+              })}
+            </div>
+          ))}
         </nav>
         <div className="admin-account">
-          <p title={admin.email}>{admin.email}</p>
+          <div className="admin-account-identity">
+            <p className="admin-account-label">로그인 계정</p>
+            <p className="admin-account-email" title={admin.email}>
+              {admin.email}
+            </p>
+          </div>
           <button
             data-admin-leave
             className="admin-button-secondary"
