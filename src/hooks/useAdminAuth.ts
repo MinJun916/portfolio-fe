@@ -1,28 +1,16 @@
 'use client';
 
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
-import { usePathname, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useSyncExternalStore } from 'react';
 
-import { QUERY_KEYS } from '@/constants/queryKeys';
 import { getToken, loginDestination, setToken, subscribeSession } from '@/lib/admin-session';
 import { authService } from '@/services/admin';
 
 export function useAdminAuth() {
-  const pathname = usePathname();
   const token = useSyncExternalStore(subscribeSession, getToken, () => null);
-  const session = useQuery({
-    queryKey: QUERY_KEYS.session(pathname),
-    queryFn: authService.me,
-    enabled: !!token,
-    staleTime: 0,
-    gcTime: 0,
-    retry: false,
-    refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
-  });
-  return { token, ...session };
+  return { token };
 }
 
 export function useAdminLogin(next: string | null) {

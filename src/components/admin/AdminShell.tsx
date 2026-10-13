@@ -17,8 +17,6 @@ import { apiError } from '@/lib/api';
 
 import { AdminSpinner } from './AdminSpinner';
 
-import type { Admin } from '@/types/admin';
-
 const navigation = [
   {
     label: '워크스페이스',
@@ -39,13 +37,7 @@ const navigation = [
   },
 ];
 
-export default function AdminShell({
-  admin,
-  children,
-}: {
-  admin: Admin;
-  children: React.ReactNode;
-}) {
+export default function AdminShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const logout = useAdminLogout();
   return (
@@ -84,12 +76,6 @@ export default function AdminShell({
           ))}
         </nav>
         <div className="admin-account">
-          <div className="admin-account-identity">
-            <p className="admin-account-label">로그인 계정</p>
-            <p className="admin-account-email" title={admin.email}>
-              {admin.email}
-            </p>
-          </div>
           <button
             data-admin-leave
             className="admin-button-secondary"
