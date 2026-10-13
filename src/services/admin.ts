@@ -1,7 +1,6 @@
 import { api, unwrap } from '@/lib/api';
 
 import type {
-  Admin,
   ApiResponse,
   ContentMap,
   InputMap,
@@ -14,7 +13,6 @@ import type {
 export const authService = {
   login: async (body: { email: string; password: string }) =>
     unwrap((await api.post<ApiResponse<LoginResult>>('/admin/auth/login', body)).data),
-  me: async () => unwrap((await api.get<ApiResponse<Admin>>('/admin/auth/me')).data),
   logout: async () =>
     unwrap((await api.post<ApiResponse<{ message: string }>>('/admin/auth/logout')).data),
   password: async (body: { currentPassword: string; newPassword: string }) =>
